@@ -22,14 +22,13 @@ Windows Server 2012 R2 Hyper-V
   
   
 ## インストール：
-  
+ [InvokeVContainer.psm1](/InvokeVContainer.psm1) と [Setup.ps1](/Setup.ps1) を同一のフォルダにダウンロードします。  
   
  ダウンロードしたスクリプトでセキュリティー警告が出る場合があるので、スクリプトをアンロックします。  
  
     PS C:\Users\Administrator\Downloads> Unblock-File .\Setup.ps1   
-
- 
- [InvokeVContainer.psm1](/InvokeVContainer.psm1) と [Setup.ps1](/Setup.ps1) を同一のフォルダに配置した状態で、レポジトリを作成するパスを指定してSetup.ps1 を実行します。  
+     
+レポジトリを作成するパスを指定してSetup.ps1 を実行します。  
 
     PS C:\Users\Administrator\Downloads> .\Setup.ps1 "D:\"
 
