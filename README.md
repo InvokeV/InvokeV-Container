@@ -19,19 +19,27 @@ InvokeV Container ‚Íg‚¢Šµ‚ê‚½Hyper-Vã‚ÅƒRƒ“ƒeƒi‚Æ“¯—l‚ÉA‚æ‚è‘¬‚­A‚æ‚è¬‚³‚­‚
 ## —vŒF
 Windows Server 2016 Hyper-V  
 Windows Server 2012 R2 Hyper-V  
-
-
+  
+  
 ## ƒCƒ“ƒXƒg[ƒ‹F
+  
+  
+ ƒ_ƒEƒ“ƒ[ƒh‚µ‚½ƒXƒNƒŠƒvƒg‚ÅƒZƒLƒ…ƒŠƒeƒB[Œx‚ªo‚éê‡‚ª‚ ‚é‚Ì‚ÅAƒXƒNƒŠƒvƒg‚ğƒAƒ“ƒƒbƒN‚µ‚Ü‚·B  
+ 
+    PS C:\Users\Administrator\Downloads> Unblock-File .\Setup.ps1   
 
-
+ 
  [InvokeVContainer.psm1](/InvokeVContainer.psm1) ‚Æ [Setup.ps1](/Setup.ps1) ‚ğ“¯ˆê‚ÌƒtƒHƒ‹ƒ_‚É”z’u‚µ‚½ó‘Ô‚ÅAƒŒƒ|ƒWƒgƒŠ‚ğì¬‚·‚éƒpƒX‚ğw’è‚µ‚ÄSetup.ps1 ‚ğÀs‚µ‚Ü‚·B  
 
-    > PS C:\Users\Administrator\Downloads> .\Setup.ps1 "D:\"
+    PS C:\Users\Administrator\Downloads> .\Setup.ps1 "D:\"
 
 w’è‚µ‚½ƒpƒX”z‰º‚ÉuInvokeVContainervƒtƒHƒ‹ƒ_i‚±‚Ìê‡‚ÍD:\InvokeVContainerj‚ªì¬‚³‚êAInvokeVContainer.psm1ƒtƒ@ƒCƒ‹‚ªAuC:\Users\Administrator\Documents\WindowsPowerShell\Modules\InvokeVContainer\InvokeVContainer.psm1v‚ÉƒRƒs[‚³‚ê‚Ü‚·BiAdministrator‚ÅƒƒOƒCƒ“‚µ‚Ä‚¢‚éê‡j  
+
 ¦WindowsƒRƒ“ƒeƒi‚ÌuDocker-PowerShellv‚ÌPowerShellƒ‚ƒWƒ…[ƒ‹‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚éê‡‚ÍAUninstall-Module Docker ‚¨‚æ‚ÑARemove-Module Docker@‚ğÀs‚µ‚ÄDocker-PowerShell‚ğíœ‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B  
-
-
+¦InvokeVContainer.psm1‚É•ÏX‚ğ‰Á‚¦‚½ê‡‚ÍAuRemove-Module *v‚ğÀs‚µ‚Äƒ‚ƒWƒ…[ƒ‹‚ÌÄ“Ç‚İ‚ª•K—v‚Å‚·B  
+¦ƒAƒ“ƒCƒ“ƒXƒg[ƒ‹‚Í ƒŒƒ|ƒWƒgƒŠƒtƒHƒ‹ƒ_‚ÆAInvokeVContainer.psm1‚ğíœ‚µ‚Ü‚·B  
+  
+  
 ## ƒRƒ}ƒ“ƒh‚ÌŠm”FF 
 
     > Get-Command -Module InvokeVContainer
@@ -57,16 +65,16 @@ Windows Server 2012 R2 Hyper-V
     Function        Start-Container                                    0.0        InvokeVContainer               
     Function        Stop-Container                                     0.0        InvokeVContainer               
     Function        Wait-ContainerBoot                                 0.0        InvokeVContainer               
-
-
+  
+  
 ## Å‰‚ÌƒRƒ“ƒeƒiƒCƒ[ƒWF
 ƒRƒ“ƒeƒiƒCƒ[ƒW‚Æ‚È‚é‚Ì‚ÍAOS‚ªƒCƒ“ƒXƒg[ƒ‹Ï‚İ‚Ì‰¼‘zƒ}ƒVƒ“‚Ìvhdxƒtƒ@ƒCƒ‹‚Å‚·BƒCƒ[ƒW‚Æ‚µ‚ÄƒCƒ“ƒ|[ƒg‚ğÀs‚µ‚Ü‚·B  
 
     > Import-ContainerImage -FilePath "D:\Hyper-V\Win2016\Win2016.vhdx"
 
 vhdxƒtƒ@ƒCƒ‹‚ÉGUID‚ğŠ„“–‚Ä‚½ƒtƒ@ƒCƒ‹‚ªAuD:\InvokeVContainer\Imagesv‚ÉƒRƒs[‚³‚ê‚Ü‚·Biƒtƒ@ƒCƒ‹ƒTƒCƒY‚É‚æ‚Á‚Ä‚Í‚µ‚Î‚ç‚­ŠÔ‚ª‚©‚©‚è‚Ü‚·Bj   
-
-
+  
+  
 ## ƒRƒ“ƒeƒiƒCƒ[ƒW‚ÌŠm”FF
 
     > Get-ContainerImage
@@ -88,8 +96,8 @@ vhdxƒtƒ@ƒCƒ‹‚ÉGUID‚ğŠ„“–‚Ä‚½ƒtƒ@ƒCƒ‹‚ªAuD:\InvokeVContainer\Imagesv‚ÉƒRƒs[‚³
     Size(MB)   : 18308
     Created    : 2016/10/13 12:09:56
     ParentPath : 
-
-
+  
+  
 ## Å‰‚ÌƒRƒ“ƒeƒi‚Ìì¬F
 
     > New-Container -ContainerName "CON_01" -ImageName "Win2016" -Memory 2048MB -Processer 1 -SwitchName "NAT"
@@ -101,8 +109,8 @@ New-NetNatƒRƒ}ƒ“ƒh‚Åì¬‚µ‚½NAT‰¼‘zƒXƒCƒbƒ`‚à—˜—p‚Å‚«‚Ü‚·‚ªAIPƒAƒhƒŒƒX‚ÍŒÂ•Ê‚ÉŠ
 
 Run-ContainerƒRƒ}ƒ“ƒh‚ğg‚¤‚ÆAƒRƒ“ƒeƒi‚Ìì¬`‹N“®`IPƒAƒhƒŒƒX‚Ìİ’è‚Ü‚Åˆê“x‚És‚¤‚±‚Æ‚ª‚Å‚«‚Ü‚·B  
 ¦IPƒAƒhƒŒƒX‚ÌŠ„“–‚ÍƒRƒ“ƒeƒiƒCƒ[ƒW‚ÌOS‚ª“‡ƒT[ƒrƒX‚É‘Î‰‚µ‚Ä‚¢‚éê‡‚Ì‚İB  @
-
-
+  
+  
 ## ƒRƒ“ƒeƒi‚ÌŠm”FF
 
 
@@ -111,25 +119,25 @@ Run-ContainerƒRƒ}ƒ“ƒh‚ğg‚¤‚ÆAƒRƒ“ƒeƒi‚Ìì¬`‹N“®`IPƒAƒhƒŒƒX‚Ìİ’è‚Ü‚Åˆê“x‚É
     Name     State Path                                              ParentPath                                                                   
     ----     ----- ----                                              ----------                                                                   
     CON_01 Running D:\InvokeVContainer\Containers\CON_01\CON_01.vhdx D:\InvokeVContainer\Images\Win2016__2110bc02-d624-4c78-879b-dd6f5601fabc.vhdx
-
-
+  
+  
 ## ƒRƒ“ƒeƒi‚Ì‹N“®F
 
     > Start-Container "CON_01" 
-
-
+  
+  
 ## ƒRƒ“ƒeƒi‚Ì’â~F
 
     > Stop-Container "CON_01" 
-
-
+  
+  
 ## ƒRƒ“ƒeƒi‚ÉÚ‘±F
 
     > vmconnect (hostname) "CON_01" 
 
 Hyper-Vƒ}ƒl[ƒWƒƒ[‚©‚ç‚Æ“¯—l‚ÉAvmconnext.exe ‚ğ—˜—p‚µ‚ÄƒRƒ“ƒeƒi‚ÉÚ‘±‚µ‚Ü‚·B  
-
-
+    
+  
 ## Å‰‚ÌƒRƒ“ƒeƒiƒCƒ[ƒW‚Ìì¬F
 
     > New-ContainerImage -ContainerName "CON_01" -ImageName "IMG_01" 
@@ -138,21 +146,21 @@ Hyper-Vƒ}ƒl[ƒWƒƒ[‚©‚ç‚Æ“¯—l‚ÉAvmconnext.exe ‚ğ—˜—p‚µ‚ÄƒRƒ“ƒeƒi‚ÉÚ‘±‚µ‚Ü‚·B
 ƒRƒ“ƒeƒi‚ª‹N“®’†‚Å‚àA’â~’†‚Å‚àƒRƒ“ƒeƒiƒCƒ[ƒW‚ğì¬‚·‚é‚±‚Æ‚ª‰Â”\‚Å‚·B  
 ì¬‚³‚ê‚½ƒRƒ“ƒeƒiƒCƒ[ƒW‚ÍAƒRƒ“ƒeƒi‚ÌeƒCƒ[ƒWƒtƒ@ƒCƒ‹‚Ìqƒtƒ@ƒCƒ‹i·•ªƒtƒ@ƒCƒ‹j‚Æ‚È‚Á‚Ä‚¢‚Ü‚·B  
 V‚µ‚­ì¬‚³‚ê‚½ƒRƒ“ƒeƒiƒCƒ[ƒW‚©‚çA‚³‚ç‚ÉƒRƒ“ƒe‚ğì¬AƒRƒ“ƒeƒiƒCƒ[ƒW‚ğì¬EEE  
-
-
+  
+  
 ## ƒRƒ“ƒeƒiƒCƒ[ƒW‚ÌŒ‹‡F
 
     > Merge-ContainerImage -ImageName "IMG_01" -NewImageName "MyNewIMG_01"
  
 eqŠÖŒW‚ÌƒRƒ“ƒeƒiƒCƒ[ƒWƒtƒ@ƒCƒ‹‚ğŒ‹‡‚µ‚ÄAV‚µ‚¢ƒRƒ“ƒeƒiƒCƒ[ƒW‚ğì¬‚µ‚Ü‚·B  
 Œ‹‡‘O‚Ìeqƒtƒ@ƒCƒ‹‚Ííœ‚³‚ê‚¸AŠÖ˜A‚µ‚½ƒRƒ“ƒeƒi‚à‚»‚Ì‚Ü‚Üc‚³‚ê‚Ü‚·B  
-
-
+  
+  
 ## ƒRƒ“ƒeƒiƒCƒ[ƒW‚ÌíœF
 
     > Remove-ContainerImage "IMG_01"
-
-    
+  
+  
 ## InvokeV Container ManagerF
 [InvokeV Container Manager](/InvokeVContainerManager.exe) ‚ÍAPowerShell‚ÌƒRƒ}ƒ“ƒh‚ğGUI‚ğg‚Á‚ÄÀs‚·‚é‚±‚Æ‚ÅA‹Šo“I‚ÉƒRƒ“ƒeƒi‚Ì‘€ìŠÇ—‚ª‰Â”\‚Æ‚È‚è‚Ü‚·B  
 ƒRƒ“ƒeƒi‚Å‚ÍAƒtƒ@ƒCƒ‹‚ÌeqŠÖŒW‚ª‘½Šò‚É‚í‚½‚é‚½‚ßA\¬‚ğ”cˆ¬‚·‚é‚½‚ß‚É‚à—L—p‚Èƒc[ƒ‹‚Æ‚È‚Á‚Ä‚¢‚Ü‚·B  
