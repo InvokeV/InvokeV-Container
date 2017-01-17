@@ -1,4 +1,4 @@
-# InvokeV-Container
+# InvokeV Container
 
 InvokeV Container は使い慣れたHyper-V上でコンテナと同様に、より速く、より小さくを実現する新しい仮想マシンの利用方法を提案します。  
 
