@@ -57,15 +57,17 @@ Function Correct-ContainerImage() {
     }
 }
 
-Function Merge-ContainerImage([String]$ImageName, [String]$NewImageName) { 
+Function Merge-ContainerImage([String]$ImageName, [String]$NewImageName, [Switch]$Del) { 
     $ImagePath = (Get-ContainerImage | Where {$_.Name -eq "$ImageName"}).Path  
-    $ParentPath = (Get-VHD "$ImagePath").ParentPath
+    $ParentPath = (Get-VHD "$ImagePath").ParentPath    
     $ParentID = $ParentPath.Split("_")[$ParentPath.Split("_").Length -2]
-    $NewImageName = $NewImageName + "_" + $ParentID + "_" + [Guid]::NewGuid() 
-    Copy-Item "$ParentPath" -Destination "$RootPath\Images\$NewImageName.vhdx" 
-    Copy-Item "$ImagePath" -Destination "$RootPath\Images\$NewImageName.avhdx"
-    Set-VHD -Path "$RootPath\Images\$NewImageName.avhdx" –ParentPath "$RootPath\Images\$NewImageName.vhdx"
-    Merge-VHD –Path "$RootPath\Images\$NewImageName.avhdx" –DestinationPath "$RootPath\Images\$NewImageName.vhdx"
+    $NewImageID = $NewImageName + "_" + $ParentID + "_" + [Guid]::NewGuid() 
+    Copy-Item "$ParentPath" -Destination "$RootPath\Images\$NewImageID.vhdx" 
+    Copy-Item "$ImagePath" -Destination "$RootPath\Images\$NewImageID.avhdx"
+    Set-VHD -Path "$RootPath\Images\$NewImageID.avhdx" –ParentPath "$RootPath\Images\$NewImageID.vhdx"
+    Merge-VHD –Path "$RootPath\Images\$NewImageID.avhdx" –DestinationPath "$RootPath\Images\$NewImageID.vhdx"  
+    If($Del){ Remove-Item $ImagePath }        
+    If($ParentID -ne "" ){ Merge-ContainerImage $NewImageName $NewImageName -Del }
 }
 
 Function Get-TreeView() { 
