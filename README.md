@@ -19,6 +19,7 @@ InvokeV Container ‚Íg‚¢Šµ‚ê‚½Hyper-Vã‚ÅƒRƒ“ƒeƒi‚Æ“¯—l‚ÉA‚æ‚è‘¬‚­A‚æ‚è¬‚³‚­‚
 ## —vŒF
 Windows Server 2016 Hyper-V  
 Windows Server 2012 R2 Hyper-V  
+Windows 10 Hyper-V  
   
   
 ## ƒCƒ“ƒXƒg[ƒ‹F
@@ -169,4 +170,4 @@ Hyper-Vƒ}ƒl[ƒWƒƒ[‚©‚ç‚Æ“¯—l‚ÉAvmconnext.exe ‚ğ—˜—p‚µ‚ÄƒRƒ“ƒeƒi‚ÉÚ‘±‚µ‚Ü‚·B
 
 
 ## InvokeV Container OverviewF
-[InvokeV Container Overview (YouTube)](https://youtu.be/FElIdcLgcdY)  
+<a href="https://youtu.be/FElIdcLgcdY" target="_blank">InvokeV Container Overview (YouTube)</a>
