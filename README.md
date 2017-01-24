@@ -170,4 +170,8 @@ Hyper-Vマネージャーからと同様に、vmconnext.exe を利用してコンテナに接続します。
 
 
 ## InvokeV Container Overview：
-<a href="https://youtu.be/FElIdcLgcdY" target="_blank">InvokeV Container Overview (YouTube)</a>
+<a href="https://youtu.be/FElIdcLgcdY" target="_blank">InvokeV Container Overview (YouTube)</a>  
+
+## InvokeV：
+<a href="https://www.facebook.com/groups/749187091776055/" target="_blank">InvokeV</a>
+
