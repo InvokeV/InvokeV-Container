@@ -1,18 +1,13 @@
 ﻿$RootPath = "<ROOT_PATH>InvokeVContainer"
 
-Function Import-ContainerImage($FilePath) { 
+Function Import-ContainerImage($FilePath, $ImageName) { 
     $File = Get-ChildItem $FilePath
     If ($File.Extension -eq ".vhdx") {
         If ($File -match "[A-Fa-f0-9]{8}\-[A-Fa-f0-9]{4}\-[A-Fa-f0-9]{4}\-[A-Fa-f0-9]{4}\-[A-Fa-f0-9]{12}" -eq $True){
             Copy-Item $File -Destination ("$RootPath\Images\" + $File.Name)
-        }Else{ 
-            $ParentPath = (Get-VHD "$FilePath").ParentPath
-            If ($ParentPath -eq ""){
-                Copy-Item $File -Destination ("$RootPath\Images\" + $File.BaseName + "__" + [Guid]::NewGuid() + ".vhdx")
-            }Else{
-                $ParentID = (Get-ChildItem $ParentPath).BaseName.Split("_")[$ParentPath.Split("_").Length - 1]
-                Copy-Item $File -Destination ("$RootPath\Images\" + $File.BaseName + "_" + $ParentID + "_" + [Guid]::NewGuid() + ".vhdx")
-            }   
+        }Else{
+            If($ImageName){$ImageName = $File.BaseName}
+            Copy-Item $File -Destination ("$RootPath\Images\" + $ImageName + "_" + [Guid]::NewGuid() + ".vhdx") 
         }
     }Else{
         Expand-Archive -Path $FilePath -DestinationPath $RootPath\Images -Force
@@ -45,29 +40,23 @@ Function Get-InvokeVContanerRoot(){
 Function Correct-ContainerImage() { 
     $Images = Get-ChildItem -Path "$RootPath\Images" -Include "*.vhdx" -Recurse
     ForEach($Image in $Images){ 
-        $ParentID = $Image.BaseName.Split("_")[ $Image.BaseName.Split("_").Length - 2]
-        $Children = Get-ChildItem -Path "$RootPath\Images" -Include "*.vhdx" -Recurse | Get-VHD | Where {$_.ParentPath -Like "*$ParentID.vhdx"}
-        ForEach($Child in $Children){ 
-            $ParentFile = Get-ChildItem -Path "$RootPath\Images" | Where {$_.FullName -Like "*$ParentID.vhdx"}
-            If($ParentID -ne "" ){                
-                Write-Host ($Child.Path) ">" ($ParentFile.FullName)
-                Set-VHD -Path $Child.Path –ParentPath $ParentFile.FullName -IgnoreIdMismatch                  
-            }
-        } 
+        $ParentPath = (Get-VHD $Image).ParentPath
+        If ($ParentPath){  
+            Set-VHD -Path $Image.FullName –ParentPath $ParentPath -IgnoreIdMismatch  
+            Write-Host $Image.Name ">" (Get-ChildItem $ParentPath).Name
+        }
     }
 }
 
 Function Merge-ContainerImage([String]$ImageName, [String]$NewImageName, [Switch]$Del) { 
     $ImagePath = (Get-ContainerImage | Where {$_.Name -eq "$ImageName"}).Path  
-    $ParentPath = (Get-VHD "$ImagePath").ParentPath    
-    $ParentID = $ParentPath.Split("_")[$ParentPath.Split("_").Length -2]
-    $NewImageID = $NewImageName + "_" + $ParentID + "_" + [Guid]::NewGuid() 
+    $ParentPath = (Get-VHD "$ImagePath").ParentPath
+    $NewImageID = $NewImageName + "_" + [Guid]::NewGuid() 
     Copy-Item "$ParentPath" -Destination "$RootPath\Images\$NewImageID.vhdx" 
     Copy-Item "$ImagePath" -Destination "$RootPath\Images\$NewImageID.avhdx"
     Set-VHD -Path "$RootPath\Images\$NewImageID.avhdx" –ParentPath "$RootPath\Images\$NewImageID.vhdx"
     Merge-VHD –Path "$RootPath\Images\$NewImageID.avhdx" –DestinationPath "$RootPath\Images\$NewImageID.vhdx"  
-    If($Del){ Remove-Item $ImagePath }        
-    If($ParentID -ne "" ){ Merge-ContainerImage $NewImageName $NewImageName -Del }
+    If($Del){ Remove-Item $ImagePath }
 }
 
 Function Get-TreeView() { 
@@ -82,12 +71,11 @@ Function Get-TreeView() {
 Function Set-TreeView([String]$ParentFile, [Int]$Level) { 
     $Files = Get-ChildItem -Path $RootPath -Include "*.vhdx" -Recurse | Get-VHD | Where {$_.ParentPath -eq $ParentFile} 
     $BaseName = (Get-ChildItem $ParentFile).BaseName
-    $Names =$BaseName.Split("_")      
-    If($Names.Length -eq 1){
-        $Name = $BaseName
+    If($BaseName -match "[A-Fa-f0-9]{8}\-[A-Fa-f0-9]{4}\-[A-Fa-f0-9]{4}\-[A-Fa-f0-9]{4}\-[A-Fa-f0-9]{12}"){
+        $Name = ($BaseName.Substring(0, $BaseName.Length - ($BaseName.Split("_")[$BaseName.Split("_").Length - 1].Length) - 1))
     }Else{
-        $Name = $BaseName.Substring(0, ($BaseName.Length - ($Names[ $Names.Length - 1].Length +$Names[ $Names.Length - 2].Length) - 2))
-    }    
+        $Name = $BaseName
+    }
     If((Get-ChildItem $ParentFile).FullName.ToUpper().StartsWith(("$RootPath\Images").ToUpper())){
         $Name = "[" + $Name + "]"
     }Else{
@@ -114,16 +102,14 @@ Function Set-TreeView([String]$ParentFile, [Int]$Level) {
 
 Function Get-ContainerImage { 
     Get-ChildItem $RootPath\Images *.vhdx | Where-Object {$_.Name -match "[A-Fa-f0-9]{8}\-[A-Fa-f0-9]{4}\-[A-Fa-f0-9]{4}\-[A-Fa-f0-9]{4}\-[A-Fa-f0-9]{12}"} | Select `
-    @{Label="Name"; Expression={($_.BaseName.Substring(0, $_.BaseName.Length - ($_.BaseName.Split("_")[$_.BaseName.Split("_").Length - 1].Length + $_.BaseName.Split("_")[$_.BaseName.Split("_").Length - 2].Length) - 2))}}, `
+    @{Label="Name"; Expression={($_.BaseName.Substring(0, $_.BaseName.Length - ($_.BaseName.Split("_")[$_.BaseName.Split("_").Length - 1].Length) - 1))}}, `
     @{Label="Path"; Expression={($_.FullName)}}, @{Label="Size(MB)"; Expression={($_.Length /1024/1024)}}, `
     @{Label="Created"; Expression={($_.LastWriteTime)}}, `
     @{Label="ParentPath"; Expression={(Get-VHD $_.FullName).ParentPath}} | Where-Object {$_.Name -ne ""}
 }
 
-Function New-ContainerImage([String]$ContainerName, [String]$ImageName) {
-    $ParentNames = (Get-Container | Where {$_.Name -eq "$ContainerName"}).ParentPath.Split("_")
-    $PID = ($ParentNames[$ParentNames.Length -1]).Split(".")[0]
-    $ImageName = $ImageName + "_" + $PID + "_" + [Guid]::NewGuid() 
+Function New-ContainerImage([String]$ContainerName, [String]$ImageName) {    
+    $ImageName = $ImageName + "_" + [Guid]::NewGuid() 
     $VM = Get-VM $ContainerName
     $Disk = Get-VMHardDiskDrive $VM   
     If($VM.State -eq "Off"){
@@ -146,7 +132,9 @@ Function Remove-ContainerImage([String]$ImageName) {
 }
 
 Function Get-Container { 
-    Get-VM | Where-Object {Test-Path ("$RootPath\Containers\" + $_.Name)} | Select @{Label="Name"; Expression={$_.Name}}, State, @{Label="Path"; Expression={((Get-VMHardDiskDrive $_.Name | Where-Object {$_.ControllerLocation -eq 0}).Path)}}, @{Label="ParentPath"; Expression={(Get-VHD(Get-VMHardDiskDrive $_.Name | Where-Object {$_.ControllerLocation -eq 0}).Path).ParentPath}}
+    Get-VM | Where-Object {Test-Path ("$RootPath\Containers\" + $_.Name)} | Select `
+    @{Label="Name"; Expression={$_.Name}}, State, @{Label="Path"; Expression={((Get-VMHardDiskDrive $_.Name | Where-Object {$_.ControllerLocation -eq 0}).Path)}}, `
+    @{Label="ParentPath"; Expression={(Get-VHD(Get-VMHardDiskDrive $_.Name | Where-Object {$_.ControllerLocation -eq 0}).Path).ParentPath}}
 }
 
 Function New-Container([String]$ContainerName, [String]$ImageName, [Long]$Memory=1024MB, [Int]$Processer=1, [String]$SwitchName) {
@@ -158,7 +146,7 @@ Function New-Container([String]$ContainerName, [String]$ImageName, [Long]$Memory
         Get-VMNetworkAdapter $VM | Connect-VMNetworkAdapter –SwitchName $SwitchName
     }
     Set-VMFirmware $VM -EnableSecureBoot Off
-    #Set-VMProcessor $VM -ExposeVirtualizationExtensions $True
+    Set-VMProcessor $VM -ExposeVirtualizationExtensions $True
 } 
 
 Function Remove-Container([String]$ContainerName) { 
