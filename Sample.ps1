@@ -49,3 +49,5 @@ Merge-ContainerImage -ImageName "IMG01" -NewImageName "IMG_NanoIIS01"
 #ツリー表示
 Get-TreeView
 
+#モジュール再読み込み
+Remove-Module *
