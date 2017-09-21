@@ -70,7 +70,7 @@ Function Merge-ContainerImage([String]$ImageName, [String]$NewImageName, [Switch
     If($Del){ Remove-Item $ImagePath }
 }
 
-Function Remove-ContainerImage[String]$ImageName, [Switch]$Tree) { 
+Function Remove-ContainerImage([String]$ImageName, [Switch]$Tree) { 
     $ImagePath = (Get-ContainerImage | Where {$_.Name -eq "$ImageName"}).Path
     If($ImagePath) {
         $ChildItems = Get-ChildItem -Path "$RootPath" -Include "*.vhdx" -Recurse | Get-VHD | Where {$_.ParentPath -eq "$ImagePath"}
@@ -112,7 +112,9 @@ Function New-Container([String]$ContainerName, [String]$ImageName, [Long]$Memory
 
 Function Get-Container { 
     Get-VM | Where-Object {Test-Path ("$RootPath\Containers\" + $_.Name)} | Select `
-    @{Label="Name"; Expression={$_.Name}}, State, @{Label="Path"; Expression={((Get-VMHardDiskDrive $_.Name | Where-Object {$_.ControllerLocation -eq 0}).Path)}}, `
+    @{Label="Name"; Expression={$_.Name}}, 
+    State, 
+    @{Label="Path"; Expression={((Get-VMHardDiskDrive $_.Name | Where-Object {$_.ControllerLocation -eq 0}).Path)}}, `
     @{Label="ParentPath"; Expression={(Get-VHD(Get-VMHardDiskDrive $_.Name | Where-Object {$_.ControllerLocation -eq 0}).Path).ParentPath}}
 }
 
@@ -158,28 +160,6 @@ Function Wait-ContainerBoot([String]$ContainerName){
     While ($Flg -eq $False)
 }
 
-Function Set-ContainerIPConfig([String]$ContainerName, [String]$IPAddress = @(), [String]$Subnet = @(), [String]$Gateway = @(), [String]$DNS = @()){
-    $ManagementService = Get-WmiObject -Namespace root\virtualization\v2 -Class Msvm_VirtualSystemManagementService 
-    $ComputerSystem = Get-WmiObject -Namespace root\virtualization\v2 -Class Msvm_ComputerSystem -Filter "ElementName = '$ContainerName'" 
-    $SettingData = $ComputerSystem.GetRelated("Msvm_VirtualSystemSettingData") | Where-Object { $_.ElementName -eq "$ContainerName" }    
-    $NetworkAdapters = $SettingData.GetRelated('Msvm_SyntheticEthernetPortSettingData') 
-    $TargetNetworkAdapter = (Get-VMNetworkAdapter $ContainerName)[0] 
-    $NetworkSettings = @()
-    ForEach ($NetworkAdapter in $NetworkAdapters) {
-        If ($NetworkAdapter.Address -eq $TargetNetworkAdapter.MacAddress) {
-            $NetworkSettings = $NetworkSettings + $NetworkAdapter.GetRelated("Msvm_GuestNetworkAdapterConfiguration")
-        }
-    }
-    $NetworkSettings[0].DHCPEnabled = $False
-    $NetworkSettings[0].IPAddresses = $IPAddress
-    $NetworkSettings[0].Subnets = $Subnet
-    $NetworkSettings[0].DefaultGateways = $Gateway
-    $NetworkSettings[0].DNSServers = $DNS
-    $NetworkSettings[0].ProtocolIFType = 4096  
-    $ManagementService.SetGuestNetworkAdapterConfiguration($ComputerSystem.Path, $NetworkSettings.GetText(1)) | Out-Null
-    #Write-Host "IP was configured."
-}
-
 Function Get-ContainerIPAddress([String]$ContainerName){
     $ManagementService = Get-WmiObject -Namespace root\virtualization\v2 -Class Msvm_VirtualSystemManagementService 
     $ComputerSystem = Get-WmiObject -Namespace root\virtualization\v2 -Class Msvm_ComputerSystem -Filter "ElementName = '$ContainerName'" 
@@ -201,6 +181,28 @@ Function Get-ContainerIPAddress([String]$ContainerName){
             Return $NetworkSettings[0].IPAddresses[0]    
         }        
     }
+}
+
+Function Set-ContainerIPConfig([String]$ContainerName, [String]$IPAddress = @(), [String]$Subnet = @(), [String]$Gateway = @(), [String]$DNS = @()){
+    $ManagementService = Get-WmiObject -Namespace root\virtualization\v2 -Class Msvm_VirtualSystemManagementService 
+    $ComputerSystem = Get-WmiObject -Namespace root\virtualization\v2 -Class Msvm_ComputerSystem -Filter "ElementName = '$ContainerName'" 
+    $SettingData = $ComputerSystem.GetRelated("Msvm_VirtualSystemSettingData") | Where-Object { $_.ElementName -eq "$ContainerName" }    
+    $NetworkAdapters = $SettingData.GetRelated('Msvm_SyntheticEthernetPortSettingData') 
+    $TargetNetworkAdapter = (Get-VMNetworkAdapter $ContainerName)[0] 
+    $NetworkSettings = @()
+    ForEach ($NetworkAdapter in $NetworkAdapters) {
+        If ($NetworkAdapter.Address -eq $TargetNetworkAdapter.MacAddress) {
+            $NetworkSettings = $NetworkSettings + $NetworkAdapter.GetRelated("Msvm_GuestNetworkAdapterConfiguration")
+        }
+    }
+    $NetworkSettings[0].DHCPEnabled = $False
+    $NetworkSettings[0].IPAddresses = $IPAddress
+    $NetworkSettings[0].Subnets = $Subnet
+    $NetworkSettings[0].DefaultGateways = $Gateway
+    $NetworkSettings[0].DNSServers = $DNS
+    $NetworkSettings[0].ProtocolIFType = 4096  
+    $ManagementService.SetGuestNetworkAdapterConfiguration($ComputerSystem.Path, $NetworkSettings.GetText(1)) | Out-Null
+    #Write-Host "IP was configured."
 }
 
 Function Get-TreeView() { 
